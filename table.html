@@ -32,7 +32,7 @@
                     <div class="panel-heading">
                         <h4 class="panel-title">Current Reservations</h4>
                     </div>
-                    <div class="panel-body" id="table">
+                    <div class="panel-body" id="tableSection">
                     </div>
                 </div>
 
@@ -40,7 +40,7 @@
                     <div class="panel-heading">
                         <h4 class="panel-title">Waiting List</h4>
                     </div>
-                    <div class="panel-body" id="waitlist">
+                    <div class="panel-body" id="waitlistSection">
                     </div>
                 </div>
             </div>
@@ -55,29 +55,30 @@
 </div>
 </body>
 <script type="text/javascript">
-    function runTable() {
+    function runTableQuery() {
         var currentURL = window.location.origin;
         $.ajax({
                 url: currentURL + "/api/tables",
                 method: "GET"
             })
-            .done(function (table) {
-                console.log("\n------------------------------------\n" +
-                            "\nURL: " + currentURL + "/api/tables\n" +
-                            "\n------------------------------------\n" +
-                            table + "\n------------------------------------\n" );
-                for (var i = 0; i < table.length; i++) {
-                    var table = $("<div>");
-                    table.addClass('well');
-                    table.attr('id', 'tableWell-' + i + 1)
-                    $('#table').append(table);
+            .done(function (data) {
+                console.log("------------------------------------");
+                console.log("URL: " + currentURL + "/api/tables");
+                console.log("------------------------------------");
+                console.log(data);
+                console.log("------------------------------------")
+                for (var i = 0; i < data.length; i++) {
+                    var tableSection = $("<div>");
+                    tableSection.addClass('well');
+                    tableSection.attr('id', 'tableWell-' + i + 1)
+                    $('#tableSection').append(tableSection);
                     var tableNumber = i + 1;
                     $("#tableWell-" + i + 1).append('<h2><span class="label label-primary">' + tableNumber +
-                        "</span> | " + table[i].customerID + "</h2>");
+                        "</span> | " + data[i].customerID + "</h2>");
                 }
             });
     }
-    function runWaitList() {
+    function runWaitListQuery() {
         var currentURL = window.location.origin;
         $.ajax({
                 url: currentURL + "/api/waitlist",
@@ -90,10 +91,10 @@
                 console.log(data);
                 console.log("------------------------------------")
                 for (var i = 0; i < data.length; i++) {
-                    var waitlist = $("<div>");
-                    waitlist.addClass('well');
-                    waitlist.attr('id', 'waitlistWell-' + i + 1)
-                    $('#waitlist').append(waitlist);
+                    var waitlistSection = $("<div>");
+                    waitlistSection.addClass('well');
+                    waitlistSection.attr('id', 'waitlistWell-' + i + 1)
+                    $('#waitlistSection').append(waitlistSection);
                     var tableNumber = i + 1;
                     $("#waitlistWell-" + i + 1).append('<h2><span class="label label-primary">' + tableNumber +
                         "</span> | " + data[i].customerID + "</h2>");
@@ -112,8 +113,8 @@
         clearTable();
         location.reload();
     })
-    runTable();
-    runWaitList();
+    runTableQuery();
+    runWaitListQuery();
 </script>
 
 </html>
