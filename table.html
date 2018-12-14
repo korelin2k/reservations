@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Table</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
+        crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery.js"></script>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="jumbotron">
+            <h1 class="text-center">Hot Restaurant</h1>
+            <hr>
+            <h2 class="text-center">Current Reservations and Waiting List</h2>
+            <br>
+
+            <div class="text-center">
+                <a href="/reserve"><button type="button" class="btn btn-lg btn-danger"></span> View Tables</button></a>
+                <a href="/"><button type="button" class="btn btn-lg btn-default">Home</button></a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Current Reservations</h4>
+                    </div>
+                    <div class="panel-body" id="table">
+                    </div>
+                </div>
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Waiting List</h4>
+                    </div>
+                    <div class="panel-body" id="waitlist">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="footer">
+        <div class="container">
+            <a href="/api/tables">API Table Link</a> | <a href="/api/waitlist">API Wait List</a>
+        </div>
+    </footer>
+
+</div>
+</body>
+<script type="text/javascript">
+    function runTable() {
+        var currentURL = window.location.origin;
+        $.ajax({
+                url: currentURL + "/api/tables",
+                method: "GET"
+            })
+            .done(function (table) {
+                console.log("\n------------------------------------\n" +
+                            "\nURL: " + currentURL + "/api/tables\n" +
+                            "\n------------------------------------\n" +
+                            table + "\n------------------------------------\n" );
+                for (var i = 0; i < table.length; i++) {
+                    var table = $("<div>");
+                    table.addClass('well');
+                    table.attr('id', 'tableWell-' + i + 1)
+                    $('#table').append(table);
+                    var tableNumber = i + 1;
+                    $("#tableWell-" + i + 1).append('<h2><span class="label label-primary">' + tableNumber +
+                        "</span> | " + table[i].customerID + "</h2>");
+                }
+            });
+    }
+    function runWaitList() {
+        var currentURL = window.location.origin;
+        $.ajax({
+                url: currentURL + "/api/waitlist",
+                method: "GET"
+            })
+            .done(function (data) {
+                console.log("------------------------------------");
+                console.log("URL: " + currentURL + "/api/waitlist");
+                console.log("------------------------------------");
+                console.log(data);
+                console.log("------------------------------------")
+                for (var i = 0; i < data.length; i++) {
+                    var waitlist = $("<div>");
+                    waitlist.addClass('well');
+                    waitlist.attr('id', 'waitlistWell-' + i + 1)
+                    $('#waitlist').append(waitlist);
+                    var tableNumber = i + 1;
+                    $("#waitlistWell-" + i + 1).append('<h2><span class="label label-primary">' + tableNumber +
+                        "</span> | " + data[i].customerID + "</h2>");
+                }
+            });
+    }
+    function clearTable() {
+        var currentURL = window.location.origin;
+        $.ajax({
+            url: currentURL + "/api/clear",
+            method: "POST"
+        })
+    }
+    $("#clear").on('click', function () {
+        alert("Clearing...");
+        clearTable();
+        location.reload();
+    })
+    runTable();
+    runWaitList();
+</script>
+
+</html>
